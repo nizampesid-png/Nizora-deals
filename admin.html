@@ -1,1 +1,139 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nizora Deals | Admin Panel</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#222}
+header{background:#111827;color:white;padding:20px}
+header h2{margin:0}
+main{max-width:900px;margin:30px auto;padding:15px}
+.card{background:white;padding:22px;border-radius:12px;margin-bottom:20px;box-shadow:0 3px 15px #0000000c}
+input,select{width:100%;padding:13px;margin:8px 0 15px;border:1px solid #ddd;border-radius:7px}
+button{padding:12px 18px;border:0;border-radius:7px;background:#2563eb;color:white;cursor:pointer}
+button:hover{opacity:.9}
+.hidden{display:none}
+.note{color:#b45309;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+<h2>Nizora Deals – Admin</h2>
+<p>Product Management Dashboard</p>
+</header>
+<main>
+<section class="card" id="login">
+<h2>Admin Login</h2>
+<p>Sign in with your authorized admin account.</p>
+<input id="email" type="email" placeholder="Admin email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="loginAdmin()">Login</button>
+<p id="loginMsg"></p>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="card">
+<h2>Add New Product</h2>
+<input id="name" placeholder="Product name">
+<input id="price" type="number" placeholder="Price (₹)">
+<select id="category">
+<option>Men's Fashion</option>
+<option>Women's Fashion</option>
+<option>Kids & Baby</option>
+<option>Beauty & Personal Care</option>
+<option>Home & Kitchen</option>
+<option>Electronics & Gadgets</option>
+<option>Mobile Accessories</option>
+<option>Footwear</option>
+<option>Bags & Luggage</option>
+<option>Fitness & Sports</option>
+<option>Toys & Games</option>
+<option>Grocery & Essentials</option>
+</select>
+<input id="image" type="url" placeholder="Product image URL">
+<input id="link" type="url" placeholder="Affiliate purchase URL">
+<button onclick="addProduct()">Add Product</button>
+<p id="msg"></p>
+</div>
+<div class="card">
+<h2>Manage Products</h2>
+<div id="products">Login to view products.</div>
+<button onclick="logoutAdmin()">Logout</button>
+</div>
+</section>
+<p class="note">Admin access will only be secure after connecting authentication and database permissions.</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// We will add your Supabase project details in the next step.
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+async function loginAdmin(){
+ const {data,error}=await db.auth.signInWithPassword({
+  email:document.getElementById("email").value,
+  password:document.getElementById("password").value
+ });
+ document.getElementById("loginMsg").textContent=error?error.message:"Login successful!";
+ if(!error){
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  loadProducts();
+ }
+}
+async function addProduct(){
+ const product={
+  name:document.getElementById("name").value.trim(),
+  price:Number(document.getElementById("price").value),
+  category:document.getElementById("category").value,
+  image_url:document.getElementById("image").value.trim(),
+  affiliate_url:document.getElementById("link").value.trim()
+ };
+ if(!product.name||!product.price||!product.affiliate_url){
+  document.getElementById("msg").textContent="Please enter product name, price and affiliate link.";
+  return;
+ }
+ const {error}=await db.from("products").insert(product);
+ document.getElementById("msg").textContent=error?error.message:"Product added!";
+ if(!error)loadProducts();
+}
+async function loadProducts(){
+ const {data,error}=await db.from("products").select("*").order("id",{ascending:false});
+ const area=document.getElementById("products");
+ if(error){area.textContent=error.message;return;}
+ area.innerHTML="";
+ data.forEach(p=>{
+  const item=document.createElement("div");
+  item.style.padding="12px";
+  item.style.borderBottom="1px solid #ddd";
+  const title=document.createElement("strong");
+  title.textContent=p.name+" – ₹"+p.price;
+  const del=document.createElement("button");
+  del.textContent="Delete";
+  del.style.marginLeft="12px";
+  del.style.background="#dc2626";
+  del.onclick=()=>deleteProduct(p.id);
+  item.append(title,del);
+  area.appendChild(item);
+ });
+}
+async function deleteProduct(id){
+ if(!confirm("Delete this product?"))return;
+ const {error}=await db.from("products").delete().eq("id",id);
+ if(error)alert(error.message);else loadProducts();
+}
+async function logoutAdmin(){
+ await db.auth.signOut();
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
+
