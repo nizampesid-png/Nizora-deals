@@ -1,70 +1,434 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Discover useful finds across fashion, electronics, home and more at Nizora Deals.">
-  <title>Nizora Deals | Discover. Compare. Shop.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{--ink:#17211d;--muted:#68736e;--green:#176b4b;--green2:#e8f4ed;--line:#e8ece9;--paper:#fbfcfa;--orange:#f3a64a;--white:#fff;--shadow:0 12px 35px rgba(23,45,34,.07)}
-    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif}a{color:inherit;text-decoration:none}button,input{font:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
-    .topline{background:#123f30;color:#e8f5ee;text-align:center;font-size:12px;padding:9px 15px;letter-spacing:.2px}.header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.headrow{height:78px;display:flex;align-items:center;gap:30px}.brand{display:flex;align-items:center;gap:10px;min-width:205px}.brandmark{width:40px;height:40px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:white;font-weight:800;font-family:Manrope;font-size:19px}.brandname{font:800 20px Manrope;letter-spacing:-.7px}.brandname span{color:var(--green)}.search{flex:1;position:relative}.search input{width:100%;height:45px;border:1px solid var(--line);background:#f7f9f7;border-radius:12px;padding:0 46px 0 16px;outline:none}.search input:focus{border-color:#8ab99f;background:white}.search button{position:absolute;right:5px;top:5px;border:0;background:var(--green);color:#fff;border-radius:9px;width:35px;height:35px;cursor:pointer}.headlink{font-size:13px;font-weight:700;color:#45534b;white-space:nowrap}.nav{display:flex;gap:26px;overflow:auto;padding:0 0 15px;white-space:nowrap}.nav a{font-size:13px;color:#536159;font-weight:600}.nav a:hover{color:var(--green)}
-    .hero{margin:28px auto 34px;border-radius:25px;overflow:hidden;background:linear-gradient(115deg,#103f30 0%,#176b4b 58%,#5d9c70 100%);color:#fff;min-height:310px;display:flex;align-items:center;position:relative}.hero:after{content:'N';position:absolute;right:8%;top:-75px;font:800 390px Manrope;color:rgba(255,255,255,.07);line-height:1}.hero-content{position:relative;z-index:1;padding:46px 55px;max-width:650px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#bde3c9;font-weight:800}.hero h1{font:800 clamp(34px,5vw,55px)/1.08 Manrope;letter-spacing:-2px;margin:15px 0}.hero p{color:#e0eee5;line-height:1.7;max-width:480px;font-size:15px}.cta{display:inline-flex;margin-top:13px;background:#fff;color:#174a36;border-radius:10px;padding:13px 19px;font-weight:800;font-size:13px}.hero-note{position:absolute;right:7%;bottom:36px;z-index:1;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:15px 19px;border-radius:15px;backdrop-filter:blur(8px);font-size:12px;color:#eff9f2}.hero-note strong{display:block;font:800 19px Manrope;margin-bottom:3px}
-    .section{margin:38px auto}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}.section h2{font:800 23px Manrope;letter-spacing:-.7px;margin:0}.section-sub{font-size:13px;color:var(--muted);margin-top:5px}.viewall{font-size:12px;color:var(--green);font-weight:800}.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:13px}.cat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 12px;text-align:center;transition:.2s;cursor:pointer}.cat:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c9dfd0}.caticon{width:49px;height:49px;border-radius:15px;background:var(--green2);display:grid;place-items:center;font-size:23px;margin:0 auto 10px}.cat strong{display:block;font-size:12px}.cat small{display:block;color:#87918b;font-size:10px;margin-top:4px}
-    .chips{display:flex;gap:8px;overflow:auto;padding:2px 0 13px}.chip{border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 15px;font-size:12px;font-weight:700;color:#526057;cursor:pointer;white-space:nowrap}.chip.active,.chip:hover{background:var(--green);border-color:var(--green);color:#fff}.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.product{background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden;transition:.2s}.product:hover{transform:translateY(-3px);box-shadow:var(--shadow)}.product-art{height:175px;display:grid;place-items:center;background:linear-gradient(135deg,#eff5f0,#e4eee7);font-size:60px;position:relative}.tag{position:absolute;top:12px;left:12px;background:#fff;color:var(--green);font-size:10px;font-weight:800;padding:6px 9px;border-radius:20px}.product-info{padding:14px}.product-cat{font-size:10px;color:#849087;text-transform:uppercase;letter-spacing:1px;font-weight:800}.product h3{font-size:14px;margin:7px 0 8px;line-height:1.4}.price{font:800 17px Manrope}.product-foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px}.shop{background:var(--green);color:#fff;border:0;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer}.shop:hover{background:#10543a}.disclaimer{font-size:10px;color:#89938d;margin-top:9px;line-height:1.5}.empty{display:none;text-align:center;padding:35px;color:var(--muted);background:white;border:1px dashed var(--line);border-radius:15px}
-    .wideband{background:#edf5ef;border:1px solid #e0ece3;border-radius:18px;padding:25px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px}.wideband h3{font:800 18px Manrope;margin:0 0 5px}.wideband p{font-size:12px;color:#627169;margin:0}.wideband a{background:#fff;color:var(--green);border:1px solid #d7e6db;border-radius:9px;padding:11px 15px;font-size:12px;font-weight:800;white-space:nowrap}
-    footer{margin-top:55px;background:#132b21;color:#eaf2ec;padding:38px 0 20px}.footgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:35px}.footbrand{font:800 20px Manrope}.footbrand span{color:#9bd2ae}.footdesc{max-width:340px;color:#b5c5ba;font-size:12px;line-height:1.7}.foothead{font-size:12px;font-weight:800;margin-bottom:13px}.footlinks{display:grid;gap:9px;color:#b5c5ba;font-size:12px}.copyright{border-top:1px solid #315042;margin-top:28px;padding-top:17px;color:#9eb2a4;font-size:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-    @media(max-width:850px){.categories{grid-template-columns:repeat(3,1fr)}.products{grid-template-columns:repeat(2,1fr)}.headrow{gap:13px}.brand{min-width:auto}.headlink{display:none}.hero-note{right:4%;bottom:20px}.footgrid{grid-template-columns:1fr 1fr}.footgrid>div:first-child{grid-column:1/-1}}
-    @media(max-width:540px){.wrap{width:min(100% - 26px,1160px)}.topline{font-size:10px}.headrow{height:68px;flex-wrap:wrap;gap:8px}.brandmark{width:35px;height:35px}.brandname{font-size:17px}.brand{min-width:155px}.search{min-width:100%;order:2;margin-bottom:11px}.headrow{height:auto;padding:12px 0}.nav{gap:18px;padding-bottom:12px}.nav a{font-size:11px}.hero{margin-top:18px;min-height:300px}.hero-content{padding:30px 25px 82px}.hero h1{font-size:37px}.hero p{font-size:13px}.hero-note{left:25px;right:auto;bottom:18px;padding:9px 13px}.hero-note strong{font-size:15px}.section{margin:29px auto}.section h2{font-size:20px}.categories{gap:9px}.cat{padding:14px 5px}.caticon{width:42px;height:42px;font-size:20px}.cat strong{font-size:10px}.cat small{font-size:9px}.products{gap:10px}.product-art{height:135px;font-size:48px}.product-info{padding:11px}.product h3{font-size:12px}.price{font-size:15px}.shop{padding:8px 9px;font-size:10px}.wideband{padding:20px;align-items:flex-start;flex-direction:column}.footgrid{grid-template-columns:1fr 1fr;gap:22px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Discover useful finds at Nizora Deals.">
+<title>Nizora Deals | Discover. Compare. Shop.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--ink:#17211d;--muted:#68736e;--green:#176b4b;
+--green2:#e8f4ed;--line:#e8ece9;--paper:#fbfcfa;
+--white:#fff;--shadow:0 12px 35px rgba(23,45,34,.07)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+.topline{background:#123f30;color:#e8f5ee;text-align:center;font-size:12px;padding:9px 15px}
+.header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.headrow{min-height:78px;display:flex;align-items:center;gap:30px}
+.brand{display:flex;align-items:center;gap:10px;min-width:205px}
+.brandmark{width:40px;height:40px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:white;font-weight:800;font-size:19px}
+.brandname{font:800 20px Manrope}
+.brandname span{color:var(--green)}
+.search{flex:1;position:relative}
+.search input{width:100%;height:45px;border:1px solid var(--line);background:#f7f9f7;border-radius:12px;padding:0 16px;outline:none}
+.search button{display:none}
+.nav{display:flex;gap:26px;overflow:auto;padding:0 0 15px;white-space:nowrap}
+.nav a{font-size:13px;color:#536159;font-weight:600}
+.hero{margin:28px auto 34px;border-radius:25px;overflow:hidden;background:linear-gradient(115deg,#103f30,#176b4b 58%,#5d9c70);color:#fff;min-height:310px;display:flex;align-items:center;position:relative}
+.hero-content{padding:46px 55px;max-width:650px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#bde3c9;font-weight:800}
+.hero h1{font:800 clamp(34px,5vw,55px)/1.08 Manrope;margin:15px 0}
+.hero p{color:#e0eee5;line-height:1.7;max-width:480px;font-size:15px}
+.cta{display:inline-flex;margin-top:13px;background:#fff;color:#174a36;border-radius:10px;padding:13px 19px;font-weight:800;font-size:13px}
+.section{margin:38px auto}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}
+.section h2{font:800 23px Manrope;margin:0}
+.section-sub{font-size:13px;color:var(--muted);margin-top:5px}
+.viewall{font-size:12px;color:var(--green);font-weight:800}
+.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:13px}
+.cat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer}
+.caticon{width:49px;height:49px;border-radius:15px;background:var(--green2);display:grid;place-items:center;font-size:23px;margin:0 auto 10px}
+.cat strong{display:block;font-size:12px}
+.cat small{display:block;color:#87918b;font-size:10px;margin-top:4px}
+.chips{display:flex;gap:8px;overflow:auto;padding:2px 0 13px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 15px;font-size:12px;font-weight:700;color:#526057;cursor:pointer;white-space:nowrap}
+.chip.active,.chip:hover{background:var(--green);border-color:var(--green);color:#fff}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.product{background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden;transition:.2s}
+.product:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.product-art{height:175px;display:grid;place-items:center;background:linear-gradient(135deg,#eff5f0,#e4eee7);font-size:55px;position:relative;overflow:hidden}
+.product-art img{width:100%;height:100%;object-fit:contain;background:#fff}
+.tag{position:absolute;top:12px;left:12px;background:#fff;color:var(--green);font-size:10px;font-weight:800;padding:6px 9px;border-radius:20px}
+.product-info{padding:14px}
+.product-cat{font-size:10px;color:#849087;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.product h3{font-size:14px;margin:7px 0 8px;line-height:1.4}
+.price{font:800 17px Manrope}
+.product-foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px;gap:8px}
+.shop{background:var(--green);color:#fff;border:0;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer}
+.shop:hover{background:#10543a}
+.disclaimer{font-size:10px;color:#89938d;margin-top:9px;line-height:1.5}
+.empty{text-align:center;padding:35px;color:var(--muted);background:white;border:1px dashed var(--line);border-radius:15px}
+.status{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+.wideband{background:#edf5ef;border:1px solid #e0ece3;border-radius:18px;padding:25px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.wideband h3{font:800 18px Manrope;margin:0 0 5px}
+.wideband p{font-size:12px;color:#627169;margin:0}
+.wideband a{background:#fff;color:var(--green);border:1px solid #d7e6db;border-radius:9px;padding:11px 15px;font-size:12px;font-weight:800}
+footer{margin-top:55px;background:#132b21;color:#eaf2ec;padding:38px 0 20px}
+.footgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:35px}
+.footbrand{font:800 20px Manrope}
+.footbrand span{color:#9bd2ae}
+.footdesc{max-width:340px;color:#b5c5ba;font-size:12px;line-height:1.7}
+.foothead{font-size:12px;font-weight:800;margin-bottom:13px}
+.footlinks{display:grid;gap:9px;color:#b5c5ba;font-size:12px}
+.copyright{border-top:1px solid #315042;margin-top:28px;padding-top:17px;color:#9eb2a4;font-size:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media(max-width:850px){
+.categories{grid-template-columns:repeat(3,1fr)}
+.products{grid-template-columns:repeat(2,1fr)}
+.headrow{gap:13px}.brand{min-width:auto}
+.footgrid{grid-template-columns:1fr 1fr}
+.footgrid>div:first-child{grid-column:1/-1}
+}
+@media(max-width:540px){
+.wrap{width:calc(100% - 26px)}
+.topline{font-size:10px}
+.headrow{flex-wrap:wrap;gap:8px;padding:12px 0}
+.brandmark{width:35px;height:35px}
+.brandname{font-size:17px}
+.search{min-width:100%;order:2}
+.nav{gap:18px;padding-bottom:12px}
+.nav a{font-size:11px}
+.hero{margin-top:18px;min-height:300px}
+.hero-content{padding:30px 25px}
+.hero h1{font-size:37px}
+.hero p{font-size:13px}
+.section{margin:29px auto}
+.section h2{font-size:20px}
+.categories{gap:9px}
+.cat{padding:14px 5px}
+.caticon{width:42px;height:42px;font-size:20px}
+.cat strong{font-size:10px}
+.cat small{font-size:9px}
+.products{gap:10px}
+.product-art{height:135px;font-size:45px}
+.product-info{padding:11px}
+.product h3{font-size:12px}
+.price{font-size:15px}
+.shop{padding:8px 9px;font-size:10px}
+.wideband{padding:20px;align-items:flex-start;flex-direction:column}
+.footgrid{grid-template-columns:1fr 1fr;gap:22px}
+}
+</style>
 </head>
+
 <body>
-  <div class="topline">Smart finds for everyday life · Fashion · Tech · Home · More</div>
-  <header class="header"><div class="wrap">
-    <div class="headrow">
-      <a class="brand" href="#home" aria-label="Nizora Deals home"><div class="brandmark">N</div><div class="brandname">Nizora <span>Deals</span></div></a>
-      <form class="search" id="searchForm"><input id="searchInput" type="search" placeholder="Search products, categories..." aria-label="Search products"><button aria-label="Search">⌕</button></form>
-      <a class="headlink" href="#categories">Explore categories ↗</a>
-    </div>
-    <nav class="nav"><a href="#home">Home</a><a href="#categories">All Categories</a><a href="#products">Trending Finds</a><a href="#about">About Nizora Deals</a></nav>
-  </div></header>
-  <main class="wrap" id="home">
-    <section class="hero"><div class="hero-content"><div class="eyebrow">Welcome to Nizora Deals</div><h1>Good finds.<br>Better everyday.</h1><p>Explore handpicked finds across fashion, electronics, home essentials and more — all in one place.</p><a class="cta" href="#categories">Explore collections&nbsp; →</a></div><div class="hero-note"><strong>Everyday discoveries</strong>Curated across all your favourites</div></section>
-    <section class="section" id="categories"><div class="section-head"><div><h2>Shop by category</h2><div class="section-sub">A little something for everyone.</div></div><a class="viewall" href="#categories">VIEW ALL</a></div>
-      <div class="categories" id="categoryGrid">
-        <a class="cat" href="#products" data-filter="Men's Fashion"><div class="caticon">👔</div><strong>Men's Fashion</strong><small>Style essentials</small></a>
-        <a class="cat" href="#products" data-filter="Women's Fashion"><div class="caticon">👗</div><strong>Women's Fashion</strong><small>Looks you'll love</small></a>
-        <a class="cat" href="#products" data-filter="Kids & Baby"><div class="caticon">🧸</div><strong>Kids & Baby</strong><small>Little favourites</small></a>
-        <a class="cat" href="#products" data-filter="Electronics"><div class="caticon">🎧</div><strong>Electronics</strong><small>Tech & gadgets</small></a>
-        <a class="cat" href="#products" data-filter="Home & Kitchen"><div class="caticon">🏡</div><strong>Home & Kitchen</strong><small>For your space</small></a>
-        <a class="cat" href="#products" data-filter="Beauty & Care"><div class="caticon">✨</div><strong>Beauty & Care</strong><small>Daily self-care</small></a>
-        <a class="cat" href="#products" data-filter="Footwear"><div class="caticon">👟</div><strong>Footwear</strong><small>Step out well</small></a>
-        <a class="cat" href="#products" data-filter="Bags & Accessories"><div class="caticon">👜</div><strong>Bags & Accessories</strong><small>Finishing touches</small></a>
-        <a class="cat" href="#products" data-filter="Fitness & Sports"><div class="caticon">🏃</div><strong>Fitness & Sports</strong><small>Move better</small></a>
-        <a class="cat" href="#products" data-filter="Toys & Games"><div class="caticon">🎮</div><strong>Toys & Games</strong><small>Playful picks</small></a>
-        <a class="cat" href="#products" data-filter="Furniture & Decor"><div class="caticon">🪴</div><strong>Furniture & Decor</strong><small>Make it yours</small></a>
-        <a class="cat" href="#products" data-filter="Daily Essentials"><div class="caticon">🛍️</div><strong>Daily Essentials</strong><small>Useful everyday</small></a>
-      </div>
-    </section>
-    <section class="section" id="products"><div class="section-head"><div><h2>Featured finds</h2><div class="section-sub">A preview of what you'll discover here.</div></div><a class="viewall" href="#products">DISCOVER MORE</a></div>
-      <div class="chips" id="filterChips"><button class="chip active" data-filter="All">All</button><button class="chip" data-filter="Men's Fashion">Men</button><button class="chip" data-filter="Women's Fashion">Women</button><button class="chip" data-filter="Electronics">Electronics</button><button class="chip" data-filter="Home & Kitchen">Home</button><button class="chip" data-filter="Beauty & Care">Beauty</button></div>
-      <div class="products" id="productGrid">
-        <article class="product" data-category="Electronics" data-name="wireless headphones"><div class="product-art">🎧<span class="tag">DEMO ITEM</span></div><div class="product-info"><div class="product-cat">Electronics</div><h3>Wireless Headphones</h3><div class="price">Add price</div><div class="product-foot"><span style="font-size:10px;color:#87918b">Sample listing</span><button class="shop" data-demo>Shop now ↗</button></div><div class="disclaimer">Demo product — affiliate link will be added later.</div></div></article>
-        <article class="product" data-category="Women's Fashion" data-name="everyday tote bag"><div class="product-art">👜<span class="tag">DEMO ITEM</span></div><div class="product-info"><div class="product-cat">Women's Fashion</div><h3>Everyday Tote Bag</h3><div class="price">Add price</div><div class="product-foot"><span style="font-size:10px;color:#87918b">Sample listing</span><button class="shop" data-demo>Shop now ↗</button></div><div class="disclaimer">Demo product — affiliate link will be added later.</div></div></article>
-        <article class="product" data-category="Home & Kitchen" data-name="kitchen storage set"><div class="product-art">🍱<span class="tag">DEMO ITEM</span></div><div class="product-info"><div class="product-cat">Home & Kitchen</div><h3>Kitchen Storage Set</h3><div class="price">Add price</div><div class="product-foot"><span style="font-size:10px;color:#87918b">Sample listing</span><button class="shop" data-demo>Shop now ↗</button></div><div class="disclaimer">Demo product — affiliate link will be added later.</div></div></article>
-        <article class="product" data-category="Men's Fashion" data-name="classic casual sneakers"><div class="product-art">👟<span class="tag">DEMO ITEM</span></div><div class="product-info"><div class="product-cat">Men's Fashion</div><h3>Classic Casual Sneakers</h3><div class="price">Add price</div><div class="product-foot"><span style="font-size:10px;color:#87918b">Sample listing</span><button class="shop" data-demo>Shop now ↗</button></div><div class="disclaimer">Demo product — affiliate link will be added later.</div></div></article>
-      </div><div class="empty" id="emptyState">No matching products found. Try another search.</div>
-    </section>
-    <section class="section wideband" id="about"><div><h3>Discover more with Nizora Deals</h3><p>Useful picks across the things you shop for, all gathered in one place.</p></div><a href="#categories">Browse all categories →</a></section>
-  </main>
-  <footer><div class="wrap"><div class="footgrid"><div><div class="footbrand">Nizora <span>Deals</span></div><p class="footdesc">A simple place to discover useful products across fashion, tech, home and everyday living.</p></div><div><div class="foothead">EXPLORE</div><div class="footlinks"><a href="#categories">Categories</a><a href="#products">Featured finds</a><a href="#about">About us</a></div></div><div><div class="foothead">INFORMATION</div><div class="footlinks"><a href="#about">Affiliate disclosure</a><a href="#about">Contact (coming soon)</a></div></div></div><div class="copyright"><span>© 2026 Nizora Deals. All rights reserved.</span><span>Some links may be affiliate links once enabled.</span></div></div></footer>
-  <script>
-    const chips=[...document.querySelectorAll('.chip')],cards=[...document.querySelectorAll('.product')],search=document.getElementById('searchInput'),empty=document.getElementById('emptyState');let active='All';
-    function apply(){const q=search.value.trim().toLowerCase();let count=0;cards.forEach(c=>{const okCat=active==='All'||c.dataset.category===active;const okQ=!q||(c.dataset.name+' '+c.dataset.category).toLowerCase().includes(q);c.style.display=okCat&&okQ?'':'none';if(okCat&&okQ)count++});empty.style.display=count?'none':'block'}
-    chips.forEach(b=>b.addEventListener('click',()=>{active=b.dataset.filter;chips.forEach(x=>x.classList.toggle('active',x===b));apply()}));
-    document.querySelectorAll('.cat').forEach(a=>a.addEventListener('click',()=>{active=a.dataset.filter;chips.forEach(x=>x.classList.toggle('active',x.dataset.filter===active));apply()}));
-    document.getElementById('searchForm').addEventListener('submit',e=>{e.preventDefault();apply();document.getElementById('products').scrollIntoView({behavior:'smooth'})});search.addEventListener('input',apply);
-    document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>alert('This is a demo listing. Real product and affiliate links will be added in the next steps.')));
-  </script>
-</body></html>
+<div class="topline">Smart finds for everyday life · Fashion · Tech · Home · More</div>
+
+<header class="header">
+<div class="wrap">
+<div class="headrow">
+<a class="brand" href="#home">
+<div class="brandmark">N</div>
+<div class="brandname">Nizora <span>Deals</span></div>
+</a>
+<form class="search" id="searchForm">
+<input id="searchInput" type="search" placeholder="Search products, categories..." aria-label="Search products">
+<button type="submit">Search</button>
+</form>
+</div>
+<nav class="nav">
+<a href="#home">Home</a>
+<a href="#categories">All Categories</a>
+<a href="#products">Trending Finds</a>
+<a href="#about">About Nizora Deals</a>
+</nav>
+</div>
+</header>
+
+<main class="wrap" id="home">
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">Welcome to Nizora Deals</div>
+<h1>Good finds.<br>Better everyday.</h1>
+<p>Explore handpicked finds across fashion, electronics, home essentials and more — all in one place.</p>
+<a class="cta" href="#categories">Explore collections →</a>
+</div>
+</section>
+
+<section class="section" id="categories">
+<div class="section-head">
+<div><h2>Shop by category</h2><div class="section-sub">A little something for everyone.</div></div>
+<a class="viewall" href="#products">VIEW ALL</a>
+</div>
+<div class="categories">
+<a class="cat" href="#products" data-filter="Men's Fashion"><div class="caticon">👔</div><strong>Men's Fashion</strong><small>Style essentials</small></a>
+<a class="cat" href="#products" data-filter="Women's Fashion"><div class="caticon">👗</div><strong>Women's Fashion</strong><small>Looks you'll love</small></a>
+<a class="cat" href="#products" data-filter="Kids & Baby"><div class="caticon">🧸</div><strong>Kids & Baby</strong><small>Little favourites</small></a>
+<a class="cat" href="#products" data-filter="Electronics"><div class="caticon">🎧</div><strong>Electronics</strong><small>Tech & gadgets</small></a>
+<a class="cat" href="#products" data-filter="Home & Kitchen"><div class="caticon">🏡</div><strong>Home & Kitchen</strong><small>For your space</small></a>
+<a class="cat" href="#products" data-filter="Beauty & Care"><div class="caticon">✨</div><strong>Beauty & Care</strong><small>Daily self-care</small></a>
+<a class="cat" href="#products" data-filter="Footwear"><div class="caticon">👟</div><strong>Footwear</strong><small>Step out well</small></a>
+<a class="cat" href="#products" data-filter="Bags & Accessories"><div class="caticon">👜</div><strong>Bags & Accessories</strong><small>Finishing touches</small></a>
+<a class="cat" href="#products" data-filter="Fitness & Sports"><div class="caticon">🏃</div><strong>Fitness & Sports</strong><small>Move better</small></a>
+<a class="cat" href="#products" data-filter="Toys & Games"><div class="caticon">🎮</div><strong>Toys & Games</strong><small>Playful picks</small></a>
+<a class="cat" href="#products" data-filter="Furniture & Decor"><div class="caticon">🪴</div><strong>Furniture & Decor</strong><small>Make it yours</small></a>
+<a class="cat" href="#products" data-filter="Daily Essentials"><div class="caticon">🛍️</div><strong>Daily Essentials</strong><small>Useful everyday</small></a>
+</div>
+</section>
+
+<section class="section" id="products">
+<div class="section-head">
+<div><h2>Featured finds</h2><div class="section-sub">Products selected for you.</div></div>
+</div>
+
+<div class="chips" id="filterChips">
+<button class="chip active" data-filter="All">All</button>
+<button class="chip" data-filter="Men's Fashion">Men</button>
+<button class="chip" data-filter="Women's Fashion">Women</button>
+<button class="chip" data-filter="Electronics">Electronics</button>
+<button class="chip" data-filter="Home & Kitchen">Home</button>
+<button class="chip" data-filter="Beauty & Care">Beauty</button>
+</div>
+
+<div class="status" id="loadingState">Loading products...</div>
+<div class="products" id="productGrid"></div>
+<div class="empty" id="emptyState" hidden>No products found. Try another search.</div>
+</section>
+
+<section class="section wideband" id="about">
+<div>
+<h3>Discover more with Nizora Deals</h3>
+<p>Useful picks across the things you shop for, all gathered in one place.</p>
+</div>
+<a href="#categories">Browse all categories →</a>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<div class="footgrid">
+<div>
+<div class="footbrand">Nizora <span>Deals</span></div>
+<p class="footdesc">A simple place to discover useful products across fashion, tech, home and everyday living.</p>
+</div>
+<div>
+<div class="foothead">EXPLORE</div>
+<div class="footlinks">
+<a href="#categories">Categories</a>
+<a href="#products">Featured finds</a>
+<a href="#about">About us</a>
+</div>
+</div>
+<div>
+<div class="foothead">INFORMATION</div>
+<div class="footlinks">
+<a href="#about">Affiliate disclosure</a>
+<a href="#about">Contact</a>
+</div>
+</div>
+</div>
+<div class="copyright">
+<span>© 2026 Nizora Deals. All rights reserved.</span>
+<span>Some links may be affiliate links.</span>
+</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://sypovoosyxljuhphhuyq.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_aSUt5u1YSAZzsUWtPEKopg_1ARx-55X";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const productGrid = document.getElementById("productGrid");
+const loadingState = document.getElementById("loadingState");
+const emptyState = document.getElementById("emptyState");
+const searchInput = document.getElementById("searchInput");
+const chips = [...document.querySelectorAll(".chip")];
+
+let allProducts = [];
+let activeFilter = "All";
+
+function safeUrl(value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol === "https:" || url.protocol === "http:") {
+      return url.href;
+    }
+  } catch (error) {}
+  return "";
+}
+
+function createProductCard(product) {
+  const card = document.createElement("article");
+  card.className = "product";
+  card.dataset.category = product.category || "";
+  card.dataset.name = product.name || "";
+
+  const art = document.createElement("div");
+  art.className = "product-art";
+
+  if (product.image_url && safeUrl(product.image_url)) {
+    const img = document.createElement("img");
+    img.src = safeUrl(product.image_url);
+    img.alt = product.name || "Product image";
+    img.loading = "lazy";
+    img.onerror = () => {
+      img.remove();
+      art.textContent = "🛍️";
+    };
+    art.appendChild(img);
+  } else {
+    art.textContent = "🛍️";
+  }
+
+  const tag = document.createElement("span");
+  tag.className = "tag";
+  tag.textContent = "NIZORA PICK";
+  art.appendChild(tag);
+
+  const info = document.createElement("div");
+  info.className = "product-info";
+
+  const category = document.createElement("div");
+  category.className = "product-cat";
+  category.textContent = product.category || "General";
+
+  const name = document.createElement("h3");
+  name.textContent = product.name || "Product";
+
+  const price = document.createElement("div");
+  price.className = "price";
+  price.textContent = product.price !== null && product.price !== undefined && product.price !== ""
+    ? "₹" + product.price
+    : "Price not listed";
+
+  const foot = document.createElement("div");
+  foot.className = "product-foot";
+
+  const label = document.createElement("span");
+  label.style.cssText = "font-size:10px;color:#87918b";
+  label.textContent = "Nizora Deals";
+
+  const shopUrl = safeUrl(product.affiliate_url);
+  let shop;
+
+  if (shopUrl) {
+    shop = document.createElement("a");
+    shop.href = shopUrl;
+    shop.target = "_blank";
+    shop.rel = "noopener noreferrer";
+    shop.className = "shop";
+    shop.textContent = "Shop now ↗";
+  } else {
+    shop = document.createElement("span");
+    shop.className = "shop";
+    shop.style.opacity = "0.6";
+    shop.textContent = "Coming soon";
+  }
+
+  const disclaimer = document.createElement("div");
+  disclaimer.className = "disclaimer";
+  disclaimer.textContent = "Check the seller's website for the latest price and details.";
+
+  foot.append(label, shop);
+  info.append(category, name, price, foot, disclaimer);
+  card.append(art, info);
+
+  return card;
+}
+
+function renderProducts() {
+  const query = searchInput.value.trim().toLowerCase();
+
+  const filtered = allProducts.filter(product => {
+    const category = product.category || "";
+    const name = product.name || "";
+
+    const matchesCategory =
+      activeFilter === "All" || category === activeFilter;
+
+    const matchesSearch =
+      !query ||
+      (name + " " + category).toLowerCase().includes(query);
+
+    return matchesCategory && matchesSearch;
+  });
+
+  productGrid.replaceChildren();
+
+  filtered.forEach(product => {
+    productGrid.appendChild(createProductCard(product));
+  });
+
+  emptyState.hidden = filtered.length !== 0;
+}
+
+async function loadProducts() {
+  loadingState.hidden = false;
+  loadingState.textContent = "Loading products...";
+
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("id, name, price, category, image_url, affiliate_url, created_at")
+    .order("created_at", { ascending: false });
+
+  loadingState.hidden = true;
+
+  if (error) {
+    console.error("Supabase error:", error);
+    productGrid.replaceChildren();
+    emptyState.hidden = false;
+    emptyState.textContent =
+      "Could not load products. Please check the public products access settings in Supabase.";
+    return;
+  }
+
+  allProducts = data || [];
+  renderProducts();
+}
+
+chips.forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
+
+    chips.forEach(chip => {
+      chip.classList.toggle("active", chip === button);
+    });
+
+    renderProducts();
+  });
+});
+
+document.querySelectorAll(".cat").forEach(category => {
+  category.addEventListener("click", () => {
+    activeFilter = category.dataset.filter;
+
+    chips.forEach(chip => {
+      chip.classList.toggle(
+        "active",
+        chip.dataset.filter === activeFilter
+      );
+    });
+
+    renderProducts();
+  });
+});
+
+document.getElementById("searchForm").addEventListener("submit", event => {
+  event.preventDefault();
+  renderProducts();
+  document.getElementById("products").scrollIntoView({
+    behavior: "smooth"
+  });
+});
+
+searchInput.addEventListener("input", renderProducts);
+
+loadProducts();
+</script>
+</body>
+</html>
