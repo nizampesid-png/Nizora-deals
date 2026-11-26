@@ -1,138 +1,735 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nizora Deals | Admin Panel</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nizora Deals — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#222}
-header{background:#111827;color:white;padding:20px}
-header h2{margin:0}
-main{max-width:900px;margin:30px auto;padding:15px}
-.card{background:white;padding:22px;border-radius:12px;margin-bottom:20px;box-shadow:0 3px 15px #0000000c}
-input,select{width:100%;padding:13px;margin:8px 0 15px;border:1px solid #ddd;border-radius:7px}
-button{padding:12px 18px;border:0;border-radius:7px;background:#2563eb;color:white;cursor:pointer}
-button:hover{opacity:.9}
-.hidden{display:none}
-.note{color:#b45309;font-size:14px}
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1e222b;
+    --line: #2a2f3a;
+    --text: #e8ebf0;
+    --muted: #9aa3b2;
+    --brand: #f97316;
+    --brand-2: #fb923c;
+    --ok: #22c55e;
+    --err: #ef4444;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .hidden { display: none !important; }
+
+  /* ---------- Login ---------- */
+  #login-view {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    display: grid; place-items: center;
+    font-weight: 800; color: #1a1207; font-size: 15px;
+  }
+  .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+  .brand span { display: block; font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], textarea, select {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+  }
+  textarea { resize: vertical; min-height: 84px; }
+  .field { margin-bottom: 14px; }
+
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: filter .15s, background .15s, border-color .15s;
+  }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #1a1207; }
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.07); }
+  .btn-ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover:not(:disabled) { background: var(--panel-2); }
+  .btn-danger { background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35); color: #fca5a5; }
+  .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,.2); }
+  .btn-block { width: 100%; }
+
+  /* ---------- Dashboard ---------- */
+  header.topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    background: rgba(15,17,21,.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .user-email { font-size: 13px; color: var(--muted); }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card h2 { font-size: 14px; margin: 0 0 16px; letter-spacing: .3px; text-transform: uppercase; color: var(--muted); }
+
+  /* ---------- Upload ---------- */
+  .dropzone {
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--panel-2);
+    transition: border-color .15s, background .15s;
+  }
+  .dropzone:hover, .dropzone.dragover { border-color: var(--brand); background: rgba(249,115,22,.06); }
+  .dropzone .dz-icon { font-size: 22px; line-height: 1; margin-bottom: 8px; }
+  .dropzone .dz-main { font-size: 13px; font-weight: 600; }
+  .dropzone .dz-sub { font-size: 11.5px; color: var(--muted); margin: 4px 0 12px; }
+  #choose-image-btn { padding: 8px 14px; font-size: 13px; }
+  #image-input { display: none; }
+
+  .preview-wrap { margin-top: 12px; position: relative; }
+  .preview-wrap img {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    display: block;
+    background: var(--panel-2);
+  }
+  .preview-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-top: 8px; font-size: 11.5px; color: var(--muted);
+  }
+  .preview-meta .fname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .link-btn {
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--err); font-size: 11.5px; font-weight: 600;
+  }
+
+  .progress {
+    height: 4px; border-radius: 99px; background: var(--panel-2);
+    overflow: hidden; margin-top: 10px;
+  }
+  .progress > i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .2s; }
+
+  /* ---------- Status ---------- */
+  .status { font-size: 12.5px; margin-top: 12px; padding: 9px 11px; border-radius: 8px; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: rgba(34,197,94,.1); color: #86efac; border: 1px solid rgba(34,197,94,.3); }
+  .status.err { background: rgba(239,68,68,.1); color: #fca5a5; border: 1px solid rgba(239,68,68,.3); }
+  .status.info { background: rgba(148,163,184,.1); color: #cbd5e1; border: 1px solid rgba(148,163,184,.25); }
+
+  /* ---------- Products table ---------- */
+  .table-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 14px;
+  }
+  .table-head h2 { margin: 0; }
+  .count-pill {
+    font-size: 11px; font-weight: 700; color: var(--brand-2);
+    background: rgba(249,115,22,.12); border: 1px solid rgba(249,115,22,.3);
+    padding: 3px 9px; border-radius: 99px;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); font-weight: 700; padding: 0 12px 10px; border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .thumb {
+    width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
+    border: 1px solid var(--line); background: var(--panel-2); display: block;
+  }
+  .thumb-empty {
+    width: 46px; height: 46px; border-radius: 8px; border: 1px dashed var(--line);
+    display: grid; place-items: center; color: var(--muted); font-size: 10px;
+  }
+  .p-name { font-weight: 600; }
+  .p-cat {
+    display: inline-block; margin-top: 3px; font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .4px; color: var(--muted);
+    background: var(--panel-2); border: 1px solid var(--line);
+    padding: 2px 7px; border-radius: 99px;
+  }
+  .p-price { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--brand-2); white-space: nowrap; }
+  .aff-link {
+    color: var(--brand-2); text-decoration: none; font-size: 12.5px; font-weight: 600;
+    display: inline-block; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    vertical-align: middle;
+  }
+  .aff-link:hover { text-decoration: underline; }
+  .aff-none { color: var(--muted); font-size: 12px; }
+  .empty-state { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 13.5px; }
+  .spinner {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.25); border-top-color: #fff;
+    display: inline-block; animation: spin .7s linear infinite; vertical-align: -3px; margin-right: 7px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-<header>
-<h2>Nizora Deals – Admin</h2>
-<p>Product Management Dashboard</p>
-</header>
-<main>
-<section class="card" id="login">
-<h2>Admin Login</h2>
-<p>Sign in with your authorized admin account.</p>
-<input id="email" type="email" placeholder="Admin email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="loginAdmin()">Login</button>
-<p id="loginMsg"></p>
-</section>
 
-<section id="dashboard" class="hidden">
-<div class="card">
-<h2>Add New Product</h2>
-<input id="name" placeholder="Product name">
-<input id="price" type="number" placeholder="Price (₹)">
-<select id="category">
-<option>Men's Fashion</option>
-<option>Women's Fashion</option>
-<option>Kids & Baby</option>
-<option>Beauty & Personal Care</option>
-<option>Home & Kitchen</option>
-<option>Electronics & Gadgets</option>
-<option>Mobile Accessories</option>
-<option>Footwear</option>
-<option>Bags & Luggage</option>
-<option>Fitness & Sports</option>
-<option>Toys & Games</option>
-<option>Grocery & Essentials</option>
-</select>
-<input id="image" type="url" placeholder="Product image URL">
-<input id="link" type="url" placeholder="Affiliate purchase URL">
-<button onclick="addProduct()">Add Product</button>
-<p id="msg"></p>
-</div>
-<div class="card">
-<h2>Manage Products</h2>
-<div id="products">Login to view products.</div>
-<button onclick="logoutAdmin()">Logout</button>
-</div>
-</section>
-<p class="note">Admin access will only be secure after connecting authentication and database permissions.</p>
-</main>
+<!-- ============================= LOGIN ============================= -->
+<div id="login-view" class="hidden">
+  <form class="login-card" id="login-form">
+    <div class="brand">
+      <div class="brand-mark">NZ</div>
+      <div>
+        <h1>Nizora Deals</h1>
+        <span>Admin Console</span>
+      </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" autocomplete="username" required placeholder="admin@nizoradeals.com" />
+    </div>
+    <div class="field">
+      <label for="login-password">Password</label>
+      <input id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••" />
+    </div>
+
+    <button class="btn-primary btn-block" id="login-btn" type="submit">Sign in</button>
+    <div class="status" id="login-status"></div>
+  </form>
+</div>
+
+<!-- =========================== DASHBOARD =========================== -->
+<div id="dashboard-view" class="hidden">
+  <header class="topbar">
+    <div class="brand" style="margin:0">
+      <div class="brand-mark">NZ</div>
+      <div>
+        <h1>Nizora Deals</h1>
+        <span>Admin Console</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="user-email" id="user-email"></span>
+      <button class="btn-ghost" id="logout-btn" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <!-- ---------- Add product ---------- -->
+      <section class="card">
+        <h2>Add Product</h2>
+        <form id="product-form">
+          <div class="field">
+            <label for="p-name-input">Product name</label>
+            <input id="p-name-input" type="text" required placeholder="e.g. Wireless Earbuds Pro" />
+          </div>
+
+          <div class="field">
+            <label for="p-price-input">Price</label>
+            <input id="p-price-input" type="number" step="0.01" min="0" required placeholder="0.00" />
+          </div>
+
+          <div class="field">
+            <label for="p-category-input">Category</label>
+            <input id="p-category-input" type="text" required placeholder="e.g. Electronics" />
+          </div>
+
+          <!-- ===== IMAGE UPLOAD (replaces the old Image URL field) ===== -->
+          <div class="field">
+            <label for="image-input">Product image</label>
+
+            <div class="dropzone" id="dropzone">
+              <div class="dz-icon">🖼️</div>
+              <div class="dz-main">Drag &amp; drop an image here</div>
+              <div class="dz-sub">JPG, PNG, WEBP or GIF · max 5 MB</div>
+              <button type="button" class="btn-ghost" id="choose-image-btn">Choose Image</button>
+            </div>
+            <input id="image-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+
+            <div class="preview-wrap hidden" id="preview-wrap">
+              <img id="preview-img" alt="Selected product image preview" />
+              <div class="preview-meta">
+                <span class="fname" id="preview-name"></span>
+                <button type="button" class="link-btn" id="clear-image">Remove</button>
+              </div>
+              <div class="progress hidden" id="upload-progress"><i></i></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="p-affiliate-input">Affiliate URL</label>
+            <input id="p-affiliate-input" type="url" placeholder="https://..." />
+          </div>
+
+          <button class="btn-primary btn-block" id="save-btn" type="submit">Save product</button>
+          <div class="status" id="form-status"></div>
+        </form>
+      </section>
+
+      <!-- ---------- Product list ---------- -->
+      <section class="card">
+        <div class="table-head">
+          <h2>Products</h2>
+          <span class="count-pill" id="product-count">0</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:64px">Image</th>
+                <th>Product</th>
+                <th style="width:110px">Price</th>
+                <th style="width:170px">Affiliate</th>
+                <th style="width:90px"></th>
+              </tr>
+            </thead>
+            <tbody id="product-rows"></tbody>
+          </table>
+        </div>
+        <div class="empty-state hidden" id="empty-state">No products yet. Add your first one on the left.</div>
+        <div class="status" id="list-status"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
 <script>
-// We will add your Supabase project details in the next step.
-const SUPABASE_URL = "https://sypovoosyxljuhphhuyq.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_aSUt5u1YSAZzsUWtPEKopg_1ARx-55X";
+/* =====================================================================
+   CONFIG
+   ---------------------------------------------------------------------
+   Copy these two values from your ORIGINAL admin.html — they are the
+   only lines that should differ from your existing file.
+   The anon key is a PUBLIC browser key and is safe here.
+   Never put the service_role key in client code.
+   ===================================================================== */
+const SUPABASE_URL      = 'https://sypovoosyxljuhphhuyq.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_aSUt5u1YSAZzsUWtPEKopg_1ARx-55X';
 
-const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const BUCKET            = 'product-images';   // public storage bucket
+const TABLE             = 'products';         // products table
+const MAX_BYTES         = 5 * 1024 * 1024;    // 5 MB
+const ALLOWED_TYPES     = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 
-async function loginAdmin(){
- const {data,error}=await db.auth.signInWithPassword({
-  email:document.getElementById("email").value,
-  password:document.getElementById("password").value
- });
- document.getElementById("loginMsg").textContent=error?error.message:"Login successful!";
- if(!error){
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  loadProducts();
- }
+/* =====================================================================
+   CLIENT
+   ===================================================================== */
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* =====================================================================
+   DOM
+   ===================================================================== */
+const $ = (id) => document.getElementById(id);
+
+const loginView   = $('login-view');
+const dashView    = $('dashboard-view');
+const loginForm   = $('login-form');
+const loginBtn    = $('login-btn');
+const loginStatus = $('login-status');
+const userEmailEl = $('user-email');
+const logoutBtn   = $('logout-btn');
+
+const productForm    = $('product-form');
+const nameInput      = $('p-name-input');
+const priceInput     = $('p-price-input');
+const categoryInput  = $('p-category-input');
+const affiliateInput = $('p-affiliate-input');
+const saveBtn        = $('save-btn');
+const formStatus     = $('form-status');
+
+const dropzone    = $('dropzone');
+const chooseBtn   = $('choose-image-btn');
+const imageInput  = $('image-input');
+const previewWrap = $('preview-wrap');
+const previewImg  = $('preview-img');
+const previewName = $('preview-name');
+const clearImage  = $('clear-image');
+const progressBar = $('upload-progress');
+
+const productRows  = $('product-rows');
+const productCount = $('product-count');
+const emptyState   = $('empty-state');
+const listStatus   = $('list-status');
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+function showView(which) {
+  loginView.classList.toggle('hidden', which !== 'login');
+  dashView.classList.toggle('hidden', which !== 'dashboard');
 }
-async function addProduct(){
- const product={
-  name:document.getElementById("name").value.trim(),
-  price:Number(document.getElementById("price").value),
-  category:document.getElementById("category").value,
-  image_url:document.getElementById("image").value.trim(),
-  affiliate_url:document.getElementById("link").value.trim()
- };
- if(!product.name||!product.price||!product.affiliate_url){
-  document.getElementById("msg").textContent="Please enter product name, price and affiliate link.";
-  return;
- }
- const {error}=await db.from("products").insert(product);
- document.getElementById("msg").textContent=error?error.message:"Product added!";
- if(!error)loadProducts();
+
+function setStatus(el, message, kind) {
+  if (!message) { el.className = 'status'; el.textContent = ''; return; }
+  el.className = 'status show ' + (kind || 'info');
+  el.textContent = message;
 }
-async function loadProducts(){
- const {data,error}=await db.from("products").select("*").order("id",{ascending:false});
- const area=document.getElementById("products");
- if(error){area.textContent=error.message;return;}
- area.innerHTML="";
- data.forEach(p=>{
-  const item=document.createElement("div");
-  item.style.padding="12px";
-  item.style.borderBottom="1px solid #ddd";
-  const title=document.createElement("strong");
-  title.textContent=p.name+" – ₹"+p.price;
-  const del=document.createElement("button");
-  del.textContent="Delete";
-  del.style.marginLeft="12px";
-  del.style.background="#dc2626";
-  del.onclick=()=>deleteProduct(p.id);
-  item.append(title,del);
-  area.appendChild(item);
- });
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
 }
-async function deleteProduct(id){
- if(!confirm("Delete this product?"))return;
- const {error}=await db.from("products").delete().eq("id",id);
- if(error)alert(error.message);else loadProducts();
+
+function formatPrice(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return escapeHtml(value ?? '—');
+  return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-async function logoutAdmin(){
- await db.auth.signOut();
- document.getElementById("dashboard").classList.add("hidden");
- document.getElementById("login").classList.remove("hidden");
+
+/* =====================================================================
+   AUTH  (unchanged: email + password, session persisted)
+   ===================================================================== */
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  setStatus(loginStatus, '');
+  loginBtn.disabled = true;
+  loginBtn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: $('login-email').value.trim(),
+    password: $('login-password').value
+  });
+
+  loginBtn.disabled = false;
+  loginBtn.textContent = 'Sign in';
+
+  if (error) {
+    setStatus(loginStatus, error.message, 'err');
+    return;
+  }
+  $('login-password').value = '';
+});
+
+logoutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
+});
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    userEmailEl.textContent = session.user?.email || '';
+    showView('dashboard');
+    loadProducts();
+  } else {
+    userEmailEl.textContent = '';
+    productRows.innerHTML = '';
+    showView('login');
+  }
+});
+
+/* =====================================================================
+   IMAGE SELECTION + PREVIEW
+   ===================================================================== */
+let selectedFile = null;
+let previewObjectUrl = null;
+
+function clearSelection() {
+  selectedFile = null;
+  imageInput.value = '';
+  if (previewObjectUrl) { URL.revokeObjectURL(previewObjectUrl); previewObjectUrl = null; }
+  previewImg.removeAttribute('src');
+  previewWrap.classList.add('hidden');
+  progressBar.classList.add('hidden');
+  progressBar.firstElementChild.style.width = '0%';
 }
+
+function acceptFile(file) {
+  if (!file) return;
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    setStatus(formStatus, 'Unsupported file type. Use JPG, PNG, WEBP or GIF.', 'err');
+    return;
+  }
+  if (file.size > MAX_BYTES) {
+    setStatus(formStatus, 'Image is too large. Maximum size is 5 MB.', 'err');
+    return;
+  }
+
+  setStatus(formStatus, '');
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+
+  selectedFile = file;
+  previewObjectUrl = URL.createObjectURL(file);
+  previewImg.src = previewObjectUrl;
+  previewImg.alt = file.name;
+  previewName.textContent = file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB';
+  previewWrap.classList.remove('hidden');
+}
+
+/* "Choose Image" button — stopPropagation so the dropzone click doesn't fire twice */
+chooseBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  imageInput.click();
+});
+dropzone.addEventListener('click', () => imageInput.click());
+imageInput.addEventListener('change', (e) => acceptFile(e.target.files[0]));
+
+['dragenter', 'dragover'].forEach((evt) =>
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); })
+);
+['dragleave', 'drop'].forEach((evt) =>
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); })
+);
+dropzone.addEventListener('drop', (e) => {
+  const file = e.dataTransfer?.files?.[0];
+  if (file) acceptFile(file);
+});
+
+clearImage.addEventListener('click', clearSelection);
+
+/* =====================================================================
+   UPLOAD TO SUPABASE STORAGE → RETURN PUBLIC URL
+   ===================================================================== */
+async function uploadImage(file) {
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const unique = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+  const path = 'products/' + unique + '.' + ext;
+
+  progressBar.classList.remove('hidden');
+  progressBar.firstElementChild.style.width = '35%';
+
+  const { error: uploadError } = await supabase.storage
+    .from(BUCKET)
+    .upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type
+    });
+
+  if (uploadError) {
+    progressBar.classList.add('hidden');
+    throw new Error('Image upload failed: ' + uploadError.message);
+  }
+
+  progressBar.firstElementChild.style.width = '80%';
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  const publicUrl = data?.publicUrl;
+
+  if (!publicUrl) {
+    progressBar.classList.add('hidden');
+    throw new Error('Upload succeeded but no public URL was returned. Is the bucket public?');
+  }
+
+  progressBar.firstElementChild.style.width = '100%';
+  return publicUrl;
+}
+
+/* =====================================================================
+   ADD PRODUCT
+   Uploads the image first, then inserts the row using the same columns
+   your original form used: name, price, category, image_url, affiliate_url
+   ===================================================================== */
+productForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  setStatus(formStatus, '');
+
+  const name = nameInput.value.trim();
+  const priceRaw = priceInput.value.trim();
+  const category = categoryInput.value.trim();
+  const affiliateUrl = affiliateInput.value.trim();
+
+  if (!name) { setStatus(formStatus, 'Product name is required.', 'err'); return; }
+  if (priceRaw === '' || Number.isNaN(Number(priceRaw))) {
+    setStatus(formStatus, 'A valid price is required.', 'err');
+    return;
+  }
+  if (!category) { setStatus(formStatus, 'Category is required.', 'err'); return; }
+
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<span class="spinner"></span>Saving…';
+
+  try {
+    let imageUrl = null;
+
+    // 1) Upload the selected file (if any) and get its public URL
+    if (selectedFile) {
+      setStatus(formStatus, 'Uploading image…', 'info');
+      imageUrl = await uploadImage(selectedFile);
+    }
+
+    // 2) Insert the product row — image_url is written in the same insert
+    setStatus(formStatus, 'Saving product…', 'info');
+    const { error: insertError } = await supabase
+      .from(TABLE)
+      .insert([{
+        name,
+        price: Number(priceRaw),
+        category,
+        image_url: imageUrl,
+        affiliate_url: affiliateUrl || null
+      }]);
+
+    if (insertError) throw new Error('Could not save product: ' + insertError.message);
+
+    setStatus(formStatus, 'Product added successfully.', 'ok');
+    productForm.reset();
+    clearSelection();
+    await loadProducts();
+
+  } catch (err) {
+    setStatus(formStatus, err.message || 'Something went wrong.', 'err');
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save product';
+    progressBar.classList.add('hidden');
+  }
+});
+
+/* =====================================================================
+   LOAD + RENDER PRODUCTS  (dashboard)
+   ===================================================================== */
+async function loadProducts() {
+  setStatus(listStatus, '');
+  productRows.innerHTML = '<tr><td colspan="5" class="empty-state">Loading…</td></tr>';
+  emptyState.classList.add('hidden');
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    productRows.innerHTML = '';
+    productCount.textContent = '0';
+    setStatus(listStatus, 'Could not load products: ' + error.message, 'err');
+    return;
+  }
+
+  renderProducts(data || []);
+}
+
+function renderProducts(products) {
+  productCount.textContent = products.length;
+
+  if (!products.length) {
+    productRows.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  emptyState.classList.add('hidden');
+
+  productRows.innerHTML = products.map((p) => {
+    const img = p.image_url
+      ? '<img class="thumb" src="' + escapeHtml(p.image_url) + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />'
+      : '<div class="thumb-empty">no img</div>';
+
+    const aff = p.affiliate_url
+      ? '<a class="aff-link" href="' + escapeHtml(p.affiliate_url) + '" target="_blank" rel="noopener noreferrer" title="' +
+        escapeHtml(p.affiliate_url) + '">Open link ↗</a>'
+      : '<span class="aff-none">—</span>';
+
+    return (
+      '<tr>' +
+        '<td>' + img + '</td>' +
+        '<td>' +
+          '<div class="p-name">' + escapeHtml(p.name) + '</div>' +
+          (p.category ? '<span class="p-cat">' + escapeHtml(p.category) + '</span>' : '') +
+        '</td>' +
+        '<td class="p-price">' + formatPrice(p.price) + '</td>' +
+        '<td>' + aff + '</td>' +
+        '<td><button class="btn-danger" type="button" data-delete="' + escapeHtml(p.id) + '">Delete</button></td>' +
+      '</tr>'
+    );
+  }).join('');
+}
+
+/* =====================================================================
+   DELETE PRODUCT  (row only — storage objects are left untouched)
+   ===================================================================== */
+productRows.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-delete]');
+  if (!btn) return;
+
+  const id = btn.getAttribute('data-delete');
+  if (!confirm('Delete this product? This cannot be undone.')) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Deleting…';
+
+  const { error } = await supabase.from(TABLE).delete().eq('id', id);
+
+  if (error) {
+    setStatus(listStatus, 'Could not delete product: ' + error.message, 'err');
+    btn.disabled = false;
+    btn.textContent = 'Delete';
+    return;
+  }
+
+  setStatus(listStatus, 'Product deleted.', 'ok');
+  await loadProducts();
+});
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+(async function boot() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    userEmailEl.textContent = session.user?.email || '';
+    showView('dashboard');
+    loadProducts();
+  } else {
+    showView('login');
+  }
+})();
 </script>
 </body>
 </html>
