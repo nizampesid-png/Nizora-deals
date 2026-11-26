@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nizora Deals Admin</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -28,9 +27,7 @@ body{
   color:var(--text);
 }
 .hidden{display:none!important}
-button,input{
-  font:inherit;
-}
+button,input{font:inherit}
 button{
   border:0;
   border-radius:8px;
@@ -38,14 +35,9 @@ button{
   cursor:pointer;
   font-weight:bold;
 }
-.primary{
-  background:var(--brand);
-  color:#111;
-}
-.danger{
-  background:#451d22;
-  color:#fca5a5;
-}
+button:disabled{opacity:.6;cursor:not-allowed}
+.primary{background:var(--brand);color:#111}
+.danger{background:#451d22;color:#fca5a5}
 .ghost{
   background:var(--input);
   color:white;
@@ -156,6 +148,16 @@ th{color:var(--muted)}
   border-radius:7px;
 }
 .price{color:#fb923c;font-weight:bold}
+.actions{
+  display:flex;
+  gap:6px;
+}
+.actions button{padding:9px 11px}
+.form-actions{
+  display:flex;
+  gap:8px;
+}
+.form-actions button{flex:1}
 @media(max-width:850px){
   .grid{grid-template-columns:1fr}
 }
@@ -204,9 +206,9 @@ th{color:var(--muted)}
   <main class="container">
     <div class="grid">
 
-      <!-- ADD PRODUCT -->
+      <!-- ADD / EDIT PRODUCT -->
       <section class="card">
-        <h2>Add New Product</h2>
+        <h2 id="form-heading">Add New Product</h2>
 
         <form id="product-form">
 
@@ -239,9 +241,15 @@ th{color:var(--muted)}
           <label>Affiliate URL</label>
           <input id="affiliate-url" type="url" placeholder="https://">
 
-          <button class="primary full" id="save-btn" type="submit">
-            Save Product
-          </button>
+          <div class="form-actions">
+            <button class="primary full" id="save-btn" type="submit">
+              Save Product
+            </button>
+
+            <button class="ghost full hidden" id="cancel-edit" type="button">
+              Cancel
+            </button>
+          </div>
         </form>
 
         <div id="form-status" class="status"></div>
@@ -273,6 +281,7 @@ th{color:var(--muted)}
 </section>
 
 <script>
+
 /* CONFIG */
 const SUPABASE_URL = 'https://sypovoosyxljuhphhuyq.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_aSUt5u1YSAZzsUWtPEKopg_1ARx-55X';
@@ -297,6 +306,9 @@ const productForm = $('product-form');
 
 let selectedFile = null;
 let previewURL = null;
+let editingProductId = null;
+let currentImageUrl = null;
+let removeCurrentImage = false;
 
 /* STATUS */
 function status(id,message,type='') {
@@ -364,6 +376,7 @@ supabaseClient.auth.onAuthStateChange((_event,session)=>{
     $('user-email').textContent = '';
     $('product-rows').innerHTML = '';
     showView('login');
+    resetProductForm();
   }
 });
 
@@ -393,6 +406,7 @@ $('image-input').addEventListener('change',e=>{
   }
 
   selectedFile = file;
+  removeCurrentImage = false;
 
   if(previewURL) URL.revokeObjectURL(previewURL);
 
@@ -404,7 +418,7 @@ $('image-input').addEventListener('change',e=>{
   status('form-status','Image selected.','ok');
 });
 
-/* REMOVE IMAGE */
+/* CLEAR IMAGE PREVIEW */
 function clearImage() {
   selectedFile = null;
   $('image-input').value = '';
@@ -418,7 +432,37 @@ function clearImage() {
   }
 }
 
-$('remove-image').addEventListener('click',clearImage);
+/* REMOVE IMAGE */
+$('remove-image').addEventListener('click',()=>{
+  clearImage();
+
+  if(editingProductId) {
+    removeCurrentImage = true;
+  }
+
+  status('form-status','Image removed from this product.','ok');
+});
+
+/* RESET FORM */
+function resetProductForm() {
+  productForm.reset();
+  clearImage();
+
+  editingProductId = null;
+  currentImageUrl = null;
+  removeCurrentImage = false;
+
+  $('form-heading').textContent = 'Add New Product';
+  $('save-btn').textContent = 'Save Product';
+  $('cancel-edit').classList.add('hidden');
+
+  status('form-status','');
+}
+
+/* CANCEL EDIT */
+$('cancel-edit').addEventListener('click',()=>{
+  resetProductForm();
+});
 
 /* UPLOAD IMAGE */
 async function uploadImage(file) {
@@ -449,13 +493,16 @@ async function uploadImage(file) {
   return data.publicUrl;
 }
 
-/* ADD PRODUCT */
+/* ADD / UPDATE PRODUCT */
 productForm.addEventListener('submit',async e=>{
   e.preventDefault();
 
   const btn = $('save-btn');
   btn.disabled = true;
-  btn.textContent = 'Saving...';
+
+  const isEditing = Boolean(editingProductId);
+
+  btn.textContent = isEditing ? 'Updating...' : 'Saving...';
 
   try {
     const name = $('product-name').value.trim();
@@ -467,38 +514,60 @@ productForm.addEventListener('submit',async e=>{
       throw new Error('Please enter valid product details.');
     }
 
-    let imageUrl = null;
+    let imageUrl = currentImageUrl;
 
     if(selectedFile) {
       status('form-status','Uploading image...');
       imageUrl = await uploadImage(selectedFile);
+    } else if(removeCurrentImage) {
+      imageUrl = null;
     }
 
-    status('form-status','Saving product...');
+    const productData = {
+      name:name,
+      price:price,
+      category:category,
+      image_url:imageUrl,
+      affiliate_url:affiliate || null
+    };
 
-    const {error} = await supabaseClient
-      .from(TABLE)
-      .insert([{
-        name:name,
-        price:price,
-        category:category,
-        image_url:imageUrl,
-        affiliate_url:affiliate || null
-      }]);
+    status('form-status',isEditing ? 'Updating product...' : 'Saving product...');
 
-    if(error) throw error;
+    let result;
 
-    productForm.reset();
-    clearImage();
+    if(isEditing) {
+      result = await supabaseClient
+        .from(TABLE)
+        .update(productData)
+        .eq('id',editingProductId);
+    } else {
+      result = await supabaseClient
+        .from(TABLE)
+        .insert([productData]);
+    }
 
-    status('form-status','Product added successfully.','ok');
+    if(result.error) throw result.error;
+
+    resetProductForm();
+
+    status(
+      'form-status',
+      isEditing ? 'Product updated successfully!' : 'Product added successfully.',
+      'ok'
+    );
+
     await loadProducts();
 
   } catch(error) {
     status('form-status',error.message || 'Something went wrong.','err');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Save Product';
+
+    if(editingProductId) {
+      btn.textContent = 'Update Product';
+    } else {
+      btn.textContent = 'Save Product';
+    }
   }
 });
 
@@ -541,8 +610,13 @@ function renderProducts(products) {
         <td>${safe(p.name)}<br><small>${safe(p.category)}</small></td>
         <td class="price">₹${safe(p.price)}</td>
         <td>
-          <button class="danger" type="button"
-            data-delete="${safe(p.id)}">Delete</button>
+          <div class="actions">
+            <button class="ghost" type="button"
+              data-edit="${safe(p.id)}">Edit</button>
+
+            <button class="danger" type="button"
+              data-delete="${safe(p.id)}">Delete</button>
+          </div>
         </td>
       </tr>
     `;
@@ -551,38 +625,101 @@ function renderProducts(products) {
   status('list-status','');
 }
 
-/* DELETE PRODUCT */
+/* EDIT + DELETE PRODUCT */
 $('product-rows').addEventListener('click',async e=>{
-  const btn = e.target.closest('[data-delete]');
-  if(!btn) return;
 
-  const id = btn.dataset.delete;
+  const editBtn = e.target.closest('[data-edit]');
+  const deleteBtn = e.target.closest('[data-delete]');
 
-  if(!confirm('Delete this product?')) return;
+  /* EDIT PRODUCT */
+  if(editBtn) {
+    const id = editBtn.dataset.edit;
 
-  btn.disabled = true;
-  btn.textContent = 'Deleting...';
+    editBtn.disabled = true;
 
-  const {error} = await supabaseClient
-    .from(TABLE)
-    .delete()
-    .eq('id',id);
+    try {
+      const {data:product,error} = await supabaseClient
+        .from(TABLE)
+        .select('*')
+        .eq('id',id)
+        .single();
 
-  if(error) {
-    status('list-status','Delete failed: '+error.message,'err');
-    btn.disabled = false;
-    btn.textContent = 'Delete';
+      if(error) throw error;
+
+      resetProductForm();
+
+      editingProductId = id;
+      currentImageUrl = product.image_url || null;
+      removeCurrentImage = false;
+
+      $('product-name').value = product.name || '';
+      $('product-price').value = product.price ?? '';
+      $('product-category').value = product.category || '';
+      $('affiliate-url').value = product.affiliate_url || '';
+
+      if(currentImageUrl) {
+        $('preview').src = currentImageUrl;
+        $('preview').classList.remove('hidden');
+        $('remove-image').classList.remove('hidden');
+      }
+
+      $('form-heading').textContent = 'Edit Product';
+      $('save-btn').textContent = 'Update Product';
+      $('cancel-edit').classList.remove('hidden');
+
+      status('form-status','Editing: '+product.name,'ok');
+
+      $('product-form').scrollIntoView({
+        behavior:'smooth',
+        block:'start'
+      });
+
+    } catch(error) {
+      status('list-status','Edit failed: '+error.message,'err');
+    } finally {
+      editBtn.disabled = false;
+    }
+
     return;
   }
 
-  status('list-status','Product deleted.','ok');
-  await loadProducts();
+  /* DELETE PRODUCT */
+  if(deleteBtn) {
+    const id = deleteBtn.dataset.delete;
+
+    if(!confirm('Are you sure you want to delete this product?')) {
+      return;
+    }
+
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = 'Deleting...';
+
+    const {error} = await supabaseClient
+      .from(TABLE)
+      .delete()
+      .eq('id',id);
+
+    if(error) {
+      status('list-status','Delete failed: '+error.message,'err');
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = 'Delete';
+      return;
+    }
+
+    if(editingProductId === id) {
+      resetProductForm();
+    }
+
+    status('list-status','Product deleted successfully.','ok');
+    await loadProducts();
+  }
 });
 
 /* START */
 (async function startAdmin() {
   try {
     const {data,error} = await supabaseClient.auth.getSession();
+
     if(error) throw error;
 
     if(data.session) {
@@ -592,12 +729,13 @@ $('product-rows').addEventListener('click',async e=>{
     } else {
       showView('login');
     }
+
   } catch(error) {
     showView('login');
     status('login-status','Startup error: '+error.message,'err');
   }
 })();
-</script>
 
+</script>
 </body>
 </html>
